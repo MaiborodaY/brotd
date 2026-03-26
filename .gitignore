@@ -40,3 +40,14 @@ Thumbs.db
 *.ipa
 *.exe
 *.app
+
+# IDE
+.cursor/
+.vscode/
+.vsconfig
+*.slnx
+*.sln
+AGENTS.md
+
+# Unity temp
+.utmp/
