@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1afe1e28d3d857544bb9d20cfa9898f4, type: 3}
+  m_Name: BasicEnemyData
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  displayName: BasicEnemy
+  icon: {fileID: -8688392260014441854, guid: c5ea5b12d39415f44af4ed507630b66b, type: 3}
+  animatorController: {fileID: 9100000, guid: bae18ecfc089cde4f86e986bdebc3422, type: 2}
+  prefab: {fileID: 889648430580830956, guid: 7a5a9825ec484014894afb8c46a9ba46, type: 3}
+  moveSpeed: 2
+  detectionRange: 6
+  maxHealth: 100
+  attackDamage: 10
+  attackRange: 1.2
+  attackCooldown: 1
+  goldReward: 10

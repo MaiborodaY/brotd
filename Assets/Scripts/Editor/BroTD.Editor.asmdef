@@ -1,0 +1,23 @@
+{
+    "name": "BroTD.Editor",
+    "rootNamespace": "",
+    "references": [
+        "BroTD.Runtime",
+        "BroTD.PvP",
+        "PhotonUnityNetworking",
+        "PhotonRealtime",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1afe1e28d3d857544bb9d20cfa9898f4, type: 3}
+  m_Name: FastEnemyData
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  displayName: FastEnemy
+  icon: {fileID: -4589246329914201413, guid: 6cdd3a8105ba88041802bf33206f6c44, type: 3}
+  animatorController: {fileID: 0}
+  prefab: {fileID: 2540149169690639580, guid: b93e439e88b3bc04cb7c6763970cbc70, type: 3}
+  moveSpeed: 3.5
+  detectionRange: 6
+  maxHealth: 60
+  attackDamage: 8
+  attackRange: 1.2
+  attackCooldown: 1
+  goldReward: 15

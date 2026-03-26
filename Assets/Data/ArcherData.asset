@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1768941d5561b04bb413b52ae50bb5b, type: 3}
+  m_Name: ArcherData
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  displayName: Archer
+  label: "\u2191"
+  unitType: 1
+  icon: {fileID: 3441200630313874802, guid: 4c6e3fb4f2e7bb4409de6311a7e0c914, type: 3}
+  prefab: {fileID: 642991069286839548, guid: a6aa1c8eb2406cc4294bda666d76b45f, type: 3}
+  moveSpeed: 2
+  detectionRange: 9
+  maxHealth: 40
+  attackDamage: 8
+  attackRange: 3.5
+  attackCooldown: 0.8
+  goldCost: 50
