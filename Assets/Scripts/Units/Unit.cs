@@ -9,17 +9,19 @@ public enum UnitState { Idle, Fighting, Dead }
 [RequireComponent(typeof(Collider))]
 public abstract class Unit : MonoBehaviour
 {
-    [HideInInspector] public UnitData Data;
-    [HideInInspector] public GridCell Cell;   // клетка, на которой стоит юнит
+    public static readonly System.Collections.Generic.List<Unit> ActiveUnits = new();
 
-    public UnitState State    { get; private set; } = UnitState.Idle;
+    [HideInInspector] public UnitData Data;
+    [HideInInspector] public GridCell Cell;
+
+    public UnitState State     { get; private set; } = UnitState.Idle;
     public int       CurrentHp { get; private set; }
     public bool      IsAlive   => State != UnitState.Dead;
 
     protected Enemy        targetEnemy;
     protected PvPUnitEnemy targetPvPEnemy;
     protected float        attackTimer;
-    private   HealthBar    healthBar;
+    protected HealthBar    healthBar;
     private   FloatingLabel floatingLabel;
 
     // ── Инициализация ─────────────────────────────────────────────────────────
@@ -39,9 +41,15 @@ public abstract class Unit : MonoBehaviour
             healthBar.SetHeight(data.hpBarHeight);
         healthBar.SetFill(CurrentHp, data.maxHealth);
 
-        if (floatingLabel == null && GetComponent<BillboardSprite>() == null)
+        if (floatingLabel == null && GetComponent<BillboardSprite>() == null
+                                  && GetComponent<TinySwordsUnitAnimator>() == null)
         {
-            if (data.icon != null)
+            if (data.animatorController != null)
+            {
+                var anim = gameObject.AddComponent<TinySwordsUnitAnimator>();
+                anim.Init(data.animatorController, data.attackAnimName);
+            }
+            else if (data.icon != null)
             {
                 BillboardSprite.AddTo(gameObject, data.icon);
             }
@@ -59,18 +67,17 @@ public abstract class Unit : MonoBehaviour
 
     private void OnEnable()
     {
+        ActiveUnits.Add(this);
         GameEvents.OnEnemyDied        += OnEnemyDied;
         GameEvents.OnWavePhaseEnded   += HandleWaveEnded;
     }
 
     private void OnDisable()
     {
+        ActiveUnits.Remove(this);
         GameEvents.OnEnemyDied        -= OnEnemyDied;
         GameEvents.OnWavePhaseEnded   -= HandleWaveEnded;
     }
-
-    private const float SeparationRadius = 0.8f;
-    private const float SeparationForce  = 2f;
 
     protected virtual void Update()
     {
@@ -79,7 +86,6 @@ public abstract class Unit : MonoBehaviour
         healthBar?.SetHeight(Data.hpBarHeight);
 
         FindTargetIfNeeded();
-        ApplySeparation();
 
         // PvP режим — таргетим PvPUnitEnemy
         if (targetEnemy == null && targetPvPEnemy != null)
@@ -120,6 +126,7 @@ public abstract class Unit : MonoBehaviour
             Vector3 dir = (targetEnemy.transform.position - transform.position);
             dir.y = 0f;
             transform.position += dir.normalized * (Data.moveSpeed * Time.deltaTime);
+            ApplySeparation();
             return;
         }
 
@@ -189,6 +196,13 @@ public abstract class Unit : MonoBehaviour
 
     // ── Получение урона / смерть ──────────────────────────────────────────────
 
+    public void Heal(float amount)
+    {
+        if (!IsAlive) return;
+        CurrentHp = Mathf.Min(CurrentHp + Mathf.RoundToInt(amount), Data.maxHealth);
+        healthBar?.SetFill(CurrentHp, Data.maxHealth);
+    }
+
     public void TakeDamage(float damage)
     {
         if (State == UnitState.Dead) return;
@@ -248,7 +262,7 @@ public abstract class Unit : MonoBehaviour
 
     private void ApplySeparation()
     {
-        var cols = Physics.OverlapSphere(transform.position, SeparationRadius);
+        var cols = Physics.OverlapSphere(transform.position, 0.8f);
         Vector3 push = Vector3.zero;
         foreach (var col in cols)
         {
@@ -258,15 +272,15 @@ public abstract class Unit : MonoBehaviour
             diff.y = 0f;
             float dist = diff.magnitude;
             if (dist < 0.01f) dist = 0.01f;
-            push += diff.normalized * (SeparationRadius - dist) / SeparationRadius;
+            push += diff.normalized * (0.8f - dist) / 0.8f;
         }
         if (push != Vector3.zero)
-            transform.position += push * SeparationForce * Time.deltaTime;
+            transform.position += push * 2f * Time.deltaTime;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private void SetState(UnitState newState)
+    protected void SetState(UnitState newState)
     {
         if (State == newState) return;
         State = newState;

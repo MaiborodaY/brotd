@@ -17,4 +17,4 @@ MonoBehaviour:
     count: 2
     centerLaneOnly: 1
   spawnInterval: 3
-  prepGoldBonus: 150
+  prepGoldBonus: 100

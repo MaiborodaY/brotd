@@ -24,3 +24,6 @@ MonoBehaviour:
   attackRange: 1.2
   attackCooldown: 1
   goldCost: 60
+  hpBarHeight: 1.4
+  animatorController: {fileID: 9100000, guid: 97558f63f21cb6647bb9e11c83e85904, type: 2}
+  attackAnimName: Attack 1

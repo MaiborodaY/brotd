@@ -25,7 +25,7 @@ public class BillboardSprite : MonoBehaviour
     }
 
     /// Анимированный спрайт (Animator Controller)
-    public static BillboardSprite AddTo(GameObject target, RuntimeAnimatorController controller, float size = 0.1f)
+    public static BillboardSprite AddTo(GameObject target, RuntimeAnimatorController controller, float size = 0.3f)
     {
         HideMesh(target);
         var bs  = target.AddComponent<BillboardSprite>();
@@ -38,43 +38,39 @@ public class BillboardSprite : MonoBehaviour
 
     private void BuildStatic(Sprite sprite)
     {
-        var child = CreateSpriteRoot();
-        var sr         = child.AddComponent<SpriteRenderer>();
-        sr.sprite      = sprite;
+        spriteRoot = new GameObject("Visual").transform;
+        spriteRoot.SetParent(transform, false);
+
+        var sr = spriteRoot.gameObject.AddComponent<SpriteRenderer>();
+        sr.sprite = sprite;
         sr.sortingOrder = 1;
 
         float texSize = Mathf.Max(sprite.texture.width, sprite.texture.height);
         float scale   = size / (texSize / sprite.pixelsPerUnit);
-        child.transform.localScale = Vector3.one * scale;
+        spriteRoot.localScale = Vector3.one * scale;
     }
 
     private void BuildAnimated(RuntimeAnimatorController controller)
     {
-        var child = CreateSpriteRoot();
-        var sr = child.AddComponent<SpriteRenderer>();
-        sr.sortingOrder = 1;
+        var existing = transform.Find("Visual");
+        if (existing != null)
+        {
+            spriteRoot = existing;
+        }
+        else
+        {
+            spriteRoot = new GameObject("Visual").transform;
+            spriteRoot.SetParent(transform, false);
+        }
 
-        SpriteAnimator = child.AddComponent<Animator>();
+        if (spriteRoot.GetComponent<SpriteRenderer>() == null)
+            spriteRoot.gameObject.AddComponent<SpriteRenderer>().sortingOrder = 1;
+
+        SpriteAnimator = spriteRoot.GetComponent<Animator>();
+        if (SpriteAnimator == null)
+            SpriteAnimator = spriteRoot.gameObject.AddComponent<Animator>();
+
         SpriteAnimator.runtimeAnimatorController = controller;
-
-        // Нормализуем масштаб через кадр — когда Animator проставит первый спрайт
-        StartCoroutine(NormalizeScale(child.transform, sr));
-    }
-
-    private System.Collections.IEnumerator NormalizeScale(Transform t, SpriteRenderer sr)
-    {
-        yield return null;
-        t.localScale = Vector3.one * size;
-    }
-
-    private GameObject CreateSpriteRoot()
-    {
-        spriteRoot = new GameObject("SpriteRoot").transform;
-        spriteRoot.SetParent(transform, false);
-
-        var child = new GameObject("Sprite");
-        child.transform.SetParent(spriteRoot, false);
-        return child;
     }
 
     private static void HideMesh(GameObject target)
@@ -91,7 +87,6 @@ public class BillboardSprite : MonoBehaviour
 
         var cam = Camera.main;
         if (cam != null)
-            spriteRoot.rotation = Quaternion.LookRotation(
-                spriteRoot.position - cam.transform.position);
+            spriteRoot.rotation = cam.transform.rotation;
     }
 }

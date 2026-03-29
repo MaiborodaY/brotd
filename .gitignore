@@ -33,6 +33,7 @@ Recordings/
 # OS
 .DS_Store
 Thumbs.db
+__MACOSX/
 
 # Build output
 *.apk

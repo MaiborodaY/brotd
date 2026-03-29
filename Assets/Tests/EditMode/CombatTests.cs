@@ -33,7 +33,7 @@ public class CombatTests
     public void TearDown()
     {
         // Чистим все объекты после каждого теста
-        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             Object.DestroyImmediate(go);
 
         PvPUnitEnemy.ActiveList.Clear();

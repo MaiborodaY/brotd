@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BroTD.Runtime::EnemyData
   displayName: BossEnemy
   icon: {fileID: -799589014536804174, guid: 7f4ac8fbd56e82b438522c31d90b013c, type: 3}
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: cb602ea455dedb04dbc9bdb267c7d01c, type: 2}
   prefab: {fileID: 1685058427410948334, guid: fff1f49391f19e84db438dc85ff984e3, type: 3}
   moveSpeed: 2
   detectionRange: 4

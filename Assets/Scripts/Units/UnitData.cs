@@ -34,4 +34,8 @@ public class UnitData : ScriptableObject
     [Header("Visuals")]
     [Tooltip("Высота полоски HP над pivot юнита (мировые единицы). Увеличь для крупных юнитов.")]
     public float hpBarHeight = 1.4f;
+    [Tooltip("Animator Controller из Tiny Swords. Если задан — используется анимированный спрайт вместо иконки.")]
+    public RuntimeAnimatorController animatorController;
+    [Tooltip("Имя анимации атаки в контроллере (Attack 1 для Warrior, Shoot для Archer)")]
+    public string attackAnimName = "Attack 1";
 }

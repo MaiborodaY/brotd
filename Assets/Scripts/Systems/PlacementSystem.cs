@@ -17,7 +17,6 @@ public class PlacementSystem : MonoBehaviour
 
     private UnitData selectedUnitData;
     private GridCell hoveredCell;
-    private bool     justSelected;
     private Vector2  tapPosition;    // позиция тапа сохранённая в момент TouchPhase.Ended
     private float    placeCooldown;  // защита от двойного срабатывания TouchPhase.Ended на Android
     private bool     isPlacing => selectedUnitData != null;
@@ -60,7 +59,6 @@ public class PlacementSystem : MonoBehaviour
     public void SelectUnit(UnitData data)
     {
         selectedUnitData = data;
-        justSelected     = true;
     }
 
     public void CancelPlacement()
@@ -141,9 +139,6 @@ public class PlacementSystem : MonoBehaviour
 
         // Пропускаем если это был свайп камеры
         if (CameraController.IsDragging) return;
-
-        // Пропускаем фрейм в котором была нажата кнопка выбора юнита
-        if (justSelected) { justSelected = false; return; }
 
         if (!isPlacing) return;
 

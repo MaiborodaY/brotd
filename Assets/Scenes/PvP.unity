@@ -6786,9 +6786,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   minZ: -14
   maxZ: 14
-  dragSensitivity: 0.03
-  smoothSpeed: 8
-  dragThreshold: 8
+  dragSensitivity: 0.01
+  smoothSpeed: 2
+  dragThreshold: 6
 --- !u!114 &2044923268
 MonoBehaviour:
   m_ObjectHideFlags: 0

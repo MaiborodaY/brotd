@@ -6,9 +6,9 @@ using UnityEngine;
 /// </summary>
 public class EnemyVisuals : MonoBehaviour
 {
-    [SerializeField] private string clipWalk   = "Orc_Walk";
-    [SerializeField] private string clipAttack = "Orc_Attack";
-    [SerializeField] private string clipDie    = "Orc_Die";
+    [SerializeField] private string clipWalk   = "Run";
+    [SerializeField] private string clipAttack = "Attack_Down";
+    [SerializeField] private string clipDie    = "Idle";
 
     private Enemy      enemy;
     private Animator   animator;

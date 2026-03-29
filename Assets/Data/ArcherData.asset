@@ -21,6 +21,9 @@ MonoBehaviour:
   detectionRange: 9
   maxHealth: 40
   attackDamage: 8
-  attackRange: 3.5
+  attackRange: 5
   attackCooldown: 0.8
   goldCost: 50
+  hpBarHeight: 1.4
+  animatorController: {fileID: 9100000, guid: 74bff7fbe9d74984aae8072203b5d420, type: 2}
+  attackAnimName: Shoot
