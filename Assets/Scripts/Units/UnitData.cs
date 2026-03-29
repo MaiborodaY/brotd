@@ -38,4 +38,12 @@ public class UnitData : ScriptableObject
     public RuntimeAnimatorController animatorController;
     [Tooltip("Имя анимации атаки в контроллере (Attack 1 для Warrior, Shoot для Archer)")]
     public string attackAnimName = "Attack 1";
+
+    [Header("Upgrades")]
+    [Tooltip("Стоимость апгрейда L1→L2 и L2→L3")]
+    public int[] upgradeCosts = { 40, 80 };
+    [Tooltip("Animator Controller для уровня 2 (Red)")]
+    public RuntimeAnimatorController level2Controller;
+    [Tooltip("Animator Controller для уровня 3 (Yellow)")]
+    public RuntimeAnimatorController level3Controller;
 }

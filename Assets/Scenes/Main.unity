@@ -1725,8 +1725,8 @@ MonoBehaviour:
   sfxVictory: {fileID: 8300000, guid: c10b133133b7a134d85dcca5129c8f9f, type: 3}
   sfxGameOver: {fileID: 8300000, guid: 2a7662f64cc4da94187b4a490d2f297d, type: 3}
   bgMusic: {fileID: 8300000, guid: fc12417b54425c241b0be147b0b047ad, type: 3}
-  musicVolume: 0.4
-  hitVolume: 0.4
+  musicVolume: 0.631
+  hitVolume: 0.327
   globalVolume: 1
 --- !u!4 &742315359
 Transform:
@@ -4145,7 +4145,7 @@ RectTransform:
   m_AnchorMin: {x: 0.39, y: 0.5}
   m_AnchorMax: {x: 0.39, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 219, y: 190}
+  m_SizeDelta: {x: 220, y: 190}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1596219396
 MonoBehaviour:
@@ -6055,10 +6055,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   minZ: -14
-  maxZ: 14
-  dragSensitivity: 0.02
-  smoothSpeed: 2
-  dragThreshold: 6
+  maxZ: 5
+  dragSensitivity: 0.01
+  smoothSpeed: 10
+  dragThreshold: 2
 --- !u!114 &2044923268
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -43,6 +43,9 @@ public class UnitButton : MonoBehaviour
         GameEvents.OnPlacementCancelled += Deselect;
         GameEvents.OnWavePhaseStarted   += Deselect;
         GameEvents.OnUnitSelected       += OnAnyUnitSelected;
+
+        if (GameStateMachine.Instance != null && unitData != null)
+            RefreshAffordable(GameStateMachine.Instance.CurrentGold);
     }
 
     private void OnDisable()

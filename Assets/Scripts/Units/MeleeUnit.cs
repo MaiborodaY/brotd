@@ -8,7 +8,7 @@ public class MeleeUnit : Unit
 {
     protected override void PerformAttack(Enemy target)
     {
-        target.TakeDamage(Data.attackDamage);
+        target.TakeDamage(AttackDamage);
         target.EngageWith(this);
         GameEvents.RaiseUnitAttack(this);
     }

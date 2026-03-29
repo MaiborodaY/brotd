@@ -64,6 +64,10 @@ public class GameHUD : MonoBehaviour
         // Кнопка рестарта в топ-баре (создаём кодом)
         CreateTopRestartButton();
 
+        // Панель апгрейда юнитов
+        if (GetComponent<UpgradePanel>() == null)
+            gameObject.AddComponent<UpgradePanel>();
+
         // Начальные значения
         if (GameStateMachine.Instance != null)
         {

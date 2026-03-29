@@ -237,9 +237,13 @@ public class PvPGameManager : MonoBehaviourPunCallbacks
         if (kingUnit != null && kingUnit.IsAlive)
             kingUnit.TakeDamage(20f);
 
-        // Если Король умер — сразу показываем поражение, не ждём конца волны
+        // Если Король умер — сообщаем противнику и показываем поражение
         if (kingUnit != null && !kingUnit.IsAlive)
         {
+            if (PhotonNetwork.IsConnected)
+                PhotonNetwork.RaiseEvent(EVENT_ROUND_RESULT, 0,
+                    new RaiseEventOptions { Receivers = ReceiverGroup.Others },
+                    SendOptions.SendReliable);
             ShowGameOver(false);
             return;
         }

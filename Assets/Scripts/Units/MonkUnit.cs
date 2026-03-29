@@ -58,7 +58,7 @@ public class MonkUnit : Unit
         {
             if (unit == this) continue;
             if (!unit.IsAlive) continue;
-            if (unit.CurrentHp >= unit.Data.maxHealth) continue;
+            if (unit.CurrentHp >= unit.MaxHp) continue;
             if (unit.CurrentHp < lowestHp)
             {
                 lowestHp = unit.CurrentHp;

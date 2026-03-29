@@ -61,6 +61,13 @@ public class TinySwordsUnitAnimator : MonoBehaviour
         }
     }
 
+    public void SwapController(RuntimeAnimatorController controller)
+    {
+        if (animator == null) return;
+        animator.runtimeAnimatorController = controller;
+        currentAnim = null;
+    }
+
     private void LateUpdate()
     {
         if (visual == null) return;

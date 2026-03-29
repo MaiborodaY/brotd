@@ -39,6 +39,7 @@ public static class GameEvents
     public static event Action<GridCell> OnCellSelected;
     public static event Action OnPlacementCancelled;
     public static event Action<UnitData> OnUnitSelected;
+    public static event Action<Unit> OnUnitTapped;       // тап по установленному юниту
 
     // =========================================================================
     // Вызовы (вызываются только из владеющих систем)
@@ -71,6 +72,7 @@ public static class GameEvents
     public static void RaiseCellSelected(GridCell cell)  => OnCellSelected?.Invoke(cell);
     public static void RaisePlacementCancelled()         => OnPlacementCancelled?.Invoke();
     public static void RaiseUnitSelected(UnitData d)     => OnUnitSelected?.Invoke(d);
+    public static void RaiseUnitTapped(Unit u)           => OnUnitTapped?.Invoke(u);
 
     // =========================================================================
     // Очистка подписок при выгрузке сцены (вызывать из GameStateMachine)
@@ -99,5 +101,6 @@ public static class GameEvents
         OnCellSelected = null;
         OnPlacementCancelled = null;
         OnUnitSelected = null;
+        OnUnitTapped = null;
     }
 }

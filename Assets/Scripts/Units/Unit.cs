@@ -14,32 +14,43 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public UnitData Data;
     [HideInInspector] public GridCell Cell;
 
-    public UnitState State     { get; private set; } = UnitState.Idle;
-    public int       CurrentHp { get; private set; }
-    public bool      IsAlive   => State != UnitState.Dead;
+    public UnitState State        { get; private set; } = UnitState.Idle;
+    public int       CurrentHp   { get; private set; }
+    public bool      IsAlive     => State != UnitState.Dead;
+    public int       Level       { get; private set; } = 1;
+    public int       MaxHp       { get; private set; }
+    public float     AttackDamage { get; private set; }
 
     protected Enemy        targetEnemy;
     protected PvPUnitEnemy targetPvPEnemy;
     protected float        attackTimer;
     protected HealthBar    healthBar;
-    private   FloatingLabel floatingLabel;
+    private   FloatingLabel    floatingLabel;
+    private   UnitLevelBadge   levelBadge;
 
     // ── Инициализация ─────────────────────────────────────────────────────────
 
     public void Init(UnitData data, GridCell cell)
     {
-        Data        = data;
-        Cell        = cell;
-        CurrentHp   = data.maxHealth;
-        attackTimer = 0f;
-        State       = UnitState.Idle;
-        targetEnemy = null;
+        Data         = data;
+        Cell         = cell;
+        Level        = 1;
+        MaxHp        = data.maxHealth;
+        AttackDamage = data.attackDamage;
+        CurrentHp    = MaxHp;
+        attackTimer  = 0f;
+        State        = UnitState.Idle;
+        targetEnemy  = null;
 
         if (healthBar == null)
             healthBar = HealthBar.AddTo(gameObject, new Vector3(0f, data.hpBarHeight, 0f));
         else
             healthBar.SetHeight(data.hpBarHeight);
-        healthBar.SetFill(CurrentHp, data.maxHealth);
+        healthBar.SetFill(CurrentHp, MaxHp);
+
+        if (levelBadge == null)
+            levelBadge = UnitLevelBadge.AddTo(gameObject, data.hpBarHeight + 0.25f);
+        levelBadge.SetLevel(Level);
 
         if (floatingLabel == null && GetComponent<BillboardSprite>() == null
                                   && GetComponent<TinySwordsUnitAnimator>() == null)
@@ -61,6 +72,30 @@ public abstract class Unit : MonoBehaviour
                 floatingLabel = FloatingLabel.AddTo(gameObject, tex, new Vector3(0f, 1.5f, 0f));
             }
         }
+    }
+
+    // ── Апгрейд ───────────────────────────────────────────────────────────────
+
+    public bool CanUpgrade => Level < 3 && Data.upgradeCosts.Length >= Level;
+
+    public int UpgradeCost => CanUpgrade ? Data.upgradeCosts[Level - 1] : 0;
+
+    public void Upgrade()
+    {
+        if (!CanUpgrade) return;
+
+        Level++;
+        int   oldMax  = MaxHp;
+        MaxHp        = Mathf.RoundToInt(Data.maxHealth * Mathf.Pow(1.3f, Level - 1));
+        AttackDamage  = Data.attackDamage * Mathf.Pow(1.25f, Level - 1);
+        CurrentHp     = Mathf.RoundToInt((float)CurrentHp / oldMax * MaxHp);
+        healthBar?.SetFill(CurrentHp, MaxHp);
+
+        var controller = Level == 2 ? Data.level2Controller : Data.level3Controller;
+        if (controller != null)
+            GetComponent<TinySwordsUnitAnimator>()?.SwapController(controller);
+
+        levelBadge?.SetLevel(Level);
     }
 
     // ── Unity lifecycle ───────────────────────────────────────────────────────
@@ -105,7 +140,7 @@ public abstract class Unit : MonoBehaviour
             if (attackTimer <= 0f)
             {
                 attackTimer = Data.attackCooldown;
-                targetPvPEnemy.TakeDamage(Data.attackDamage);
+                targetPvPEnemy.TakeDamage(AttackDamage);
                 GameEvents.RaiseUnitAttack(this);
             }
             return;
@@ -199,8 +234,8 @@ public abstract class Unit : MonoBehaviour
     public void Heal(float amount)
     {
         if (!IsAlive) return;
-        CurrentHp = Mathf.Min(CurrentHp + Mathf.RoundToInt(amount), Data.maxHealth);
-        healthBar?.SetFill(CurrentHp, Data.maxHealth);
+        CurrentHp = Mathf.Min(CurrentHp + Mathf.RoundToInt(amount), MaxHp);
+        healthBar?.SetFill(CurrentHp, MaxHp);
     }
 
     public void TakeDamage(float damage)
@@ -240,7 +275,7 @@ public abstract class Unit : MonoBehaviour
         }
 
         if (RestoreHpOnWaveEnd())
-            CurrentHp = Data.maxHealth;
+            CurrentHp = MaxHp;
 
         attackTimer = 0f;
         targetEnemy = null;
@@ -248,7 +283,7 @@ public abstract class Unit : MonoBehaviour
         transform.position = Cell.WorldPosition;
         gameObject.SetActive(true);
         Cell.PlaceUnit(this);
-        healthBar?.SetFill(CurrentHp, Data.maxHealth);
+        healthBar?.SetFill(CurrentHp, MaxHp);
 
         SetState(UnitState.Idle);
         GameEvents.RaiseUnitRespawned(this);

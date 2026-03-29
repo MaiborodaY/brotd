@@ -19,6 +19,7 @@ public class PlacementSystem : MonoBehaviour
     private GridCell hoveredCell;
     private Vector2  tapPosition;    // позиция тапа сохранённая в момент TouchPhase.Ended
     private float    placeCooldown;  // защита от двойного срабатывания TouchPhase.Ended на Android
+    private bool     suppressUntilNextPress; // после постройки — ждём новый press прежде чем открывать апгрейд
     private bool     isPlacing => selectedUnitData != null;
 
     public UnitData SelectedData => selectedUnitData;
@@ -105,14 +106,28 @@ public class PlacementSystem : MonoBehaviour
 
     private void HandleInput()
     {
+        // ── Detect press-start (began) ────────────────────────────────────────
+        // Проверяем мышь и тачскрин НЕЗАВИСИМО (не else-if),
+        // т.к. на Android оба устройства могут быть non-null одновременно.
+#if ENABLE_INPUT_SYSTEM
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            suppressUntilNextPress = false;
+        if (Touchscreen.current != null &&
+            Touchscreen.current.primaryTouch.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
+            suppressUntilNextPress = false;
+#else
+        if (Input.GetMouseButtonDown(0)) suppressUntilNextPress = false;
+#endif
+
         if (placeCooldown > 0f) { placeCooldown -= Time.deltaTime; return; }
 
+        // ── Detect tap (released) ─────────────────────────────────────────────
         bool tapped = false;
 
 #if ENABLE_INPUT_SYSTEM
         if (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            tapped     = true;
+            tapped      = true;
             tapPosition = Mouse.current.position.ReadValue();
         }
         else if (Touchscreen.current != null)
@@ -140,7 +155,30 @@ public class PlacementSystem : MonoBehaviour
         // Пропускаем если это был свайп камеры
         if (CameraController.IsDragging) return;
 
-        if (!isPlacing) return;
+        if (!isPlacing)
+        {
+            if (suppressUntilNextPress) return;
+            Ray tapRay = mainCamera.ScreenPointToRay(tapPosition);
+            if (Physics.Raycast(tapRay, out RaycastHit tapHit, 100f))
+            {
+                // Сначала проверяем коллайдер самого юнита
+                var unit = tapHit.collider.GetComponentInParent<Unit>();
+                if (unit != null && unit.IsAlive)
+                {
+                    GameEvents.RaiseUnitTapped(unit);
+                }
+                else
+                {
+                    // Fallback — тап по GridCell (чуть ниже спрайта)
+                    var tapCell = tapHit.collider.GetComponentInParent<GridCell>();
+                    if (tapCell != null && tapCell.IsOccupied)
+                        GameEvents.RaiseUnitTapped(tapCell.OccupyingUnit);
+                    else
+                        GameEvents.RaiseUnitTapped(null);
+                }
+            }
+            return;
+        }
 
         Ray ray = mainCamera.ScreenPointToRay(tapPosition);
         if (!Physics.Raycast(ray, out RaycastHit hit, 100f))
@@ -185,8 +223,9 @@ public class PlacementSystem : MonoBehaviour
         cell.PlaceUnit(unit);
 
         // Сбрасываем выбор сразу — защита от двойного тача и стандартная практика TD
-        selectedUnitData = null;
-        placeCooldown    = 0.5f;
+        selectedUnitData      = null;
+        placeCooldown         = 0.5f;
+        suppressUntilNextPress = true;  // разблокируется только на следующем wasPressedThisFrame
         GameEvents.RaiseUnitPlaced(unit);
         GameEvents.RaisePlacementCancelled(); // кнопки UI снимают подсветку
     }

@@ -8,7 +8,7 @@ public class RangedUnit : Unit
 {
     protected override void PerformAttack(Enemy target)
     {
-        target.TakeDamage(Data.attackDamage);
+        target.TakeDamage(AttackDamage);
         GameEvents.RaiseUnitAttack(this);
 
         // Если враг вплотную — останавливаем его, он дерётся с нами

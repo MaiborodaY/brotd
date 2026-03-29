@@ -39,12 +39,13 @@ public class PvPUnitEnemy : MonoBehaviour
         engagedUnit   = null;
         chasingUnit   = null;
 
-        // Визуал — спрайт юнита противника
-        if (data.icon != null)
+        // Визуал — Tiny Swords анимация или иконка
+        if (data.animatorController != null)
+            BillboardSprite.AddTo(gameObject, data.animatorController);
+        else if (data.icon != null)
             BillboardSprite.AddTo(gameObject, data.icon);
 
         ApplyEnemyTint();
-        AddGroundMarker();
 
         healthBar = HealthBar.AddTo(gameObject, new Vector3(0f, data.hpBarHeight, 0f));
         healthBar.SetFill((int)hp, data.maxHealth);
@@ -129,6 +130,14 @@ public class PvPUnitEnemy : MonoBehaviour
     private void UpdateFighting()
     {
         if (engagedUnit == null || !engagedUnit.IsAlive)
+        {
+            engagedUnit = null;
+            isFighting  = false;
+            return;
+        }
+
+        float dist = Vector3.Distance(transform.position, engagedUnit.transform.position);
+        if (dist > unitData.attackRange)
         {
             engagedUnit = null;
             isFighting  = false;

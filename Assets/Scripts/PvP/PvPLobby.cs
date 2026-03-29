@@ -98,7 +98,7 @@ public class PvPLobby : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        SetStatus("Room not found. Check the code.");
+        SetStatus($"Error {returnCode}: {message}");
         ShowPanel(lobbyPanel);
     }
 
